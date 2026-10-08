@@ -3,15 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barbaadi Certificate Generator</title>
+    <title>Barbaadi.com | Ministry of Barbaadi Certificate Generator 🔥</title>
+    <meta name="description" content="Generate high-quality, hilarious, totally fake certificates to roast your friends for their everyday crimes. Download crystal-clear PNG and A4 PDF!">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22 0%22 100%22 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Oswald:wght@500;700&family=Poppins:wght@400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Oswald:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- PDF & Canvas Libraries -->
+    <!-- PDF, Canvas & Confetti Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -22,12 +28,11 @@
         /* Base UI Styles */
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #0f172a;
+            background-color: #0b0f19;
             color: #f8fafc;
-            /* Animated background gradient */
-            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #312e81, #0f172a);
+            background: linear-gradient(-45deg, #0b0f19, #15192c, #271e3d, #0b0f19);
             background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            animation: gradientBG 18s ease infinite;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -39,38 +44,37 @@
         }
 
         .glass-panel {
-            background: rgba(15, 23, 42, 0.4);
+            background: rgba(15, 23, 42, 0.65);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
         }
 
         .input-field {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             color: white;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
         }
         
         .input-field:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            border-color: #f97316;
+            box-shadow: 0 0 15px rgba(249, 115, 22, 0.35);
             outline: none;
         }
 
         /* 
-           CERTIFICATE STYLES 
-           Fixed Landscape dimensions (900x650) to ensure perfect rendering.
+           CERTIFICATE THEME VARIABLES & FIXED STYLES
+           Fixed Landscape dimensions (900x650) ensuring zero stretching/cutting
         */
         :root {
-            /* Default Classic Theme */
-            --cert-bg: #fff5e6;
+            --cert-bg: #fff8eb;
             --cert-border-outer: #b91c1c;
             --cert-border-inner: #ea580c;
-            --cert-text-dark: #1a1a1a;
+            --cert-text-dark: #18181b;
             --cert-text-highlight: #991b1b;
-            --cert-stamp-color: rgba(185, 28, 28, 0.15);
+            --cert-stamp-color: rgba(185, 28, 28, 0.12);
         }
 
         .preview-wrapper {
@@ -78,25 +82,28 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            overflow: visible;
-            /* Container for the scaled certificate */
             position: relative;
+            overflow: hidden;
+            transition: height 0.2s ease;
         }
 
         #certificate-container {
             width: 900px;
             height: 650px;
+            min-width: 900px;
+            min-height: 650px;
+            max-width: 900px;
+            max-height: 650px;
             background-color: var(--cert-bg);
             position: relative;
             box-sizing: border-box;
             padding: 20px;
             transform-origin: top center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            /* Texture overlay */
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.85);
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            user-select: none;
         }
 
-        /* Stable CSS borders instead of SVG for reliable PDF export */
         .cert-border {
             border: 5px solid var(--cert-border-outer);
             width: 100%;
@@ -111,8 +118,8 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Crucial for keeping footer at bottom */
-            padding: 25px 30px;
+            justify-content: space-between;
+            padding: 24px 30px;
             box-sizing: border-box;
             position: relative;
             overflow: hidden;
@@ -120,31 +127,33 @@
 
         .cert-header {
             text-align: center;
+            position: relative;
+            z-index: 10;
         }
 
         .cert-title {
             font-family: 'Oswald', sans-serif;
-            font-size: 2.8rem;
+            font-size: 2.75rem;
             color: var(--cert-border-outer);
             text-transform: uppercase;
             letter-spacing: 2px;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.12);
             line-height: 1.1;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .cert-subtitle {
             font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             color: var(--cert-border-inner);
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 2.5px;
         }
 
         .cert-body {
             text-align: center;
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             line-height: 1.4;
             color: var(--cert-text-dark);
             flex-grow: 1;
@@ -153,71 +162,112 @@
             justify-content: center;
             align-items: center;
             z-index: 10;
+            padding: 4px 10px;
+        }
+
+        .cert-body p {
+            margin: 2px 0;
+            color: var(--cert-text-dark);
+        }
+
+        .name-wrapper {
+            max-width: 820px;
+            overflow: visible;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 6px 0 10px 0;
         }
 
         .name-highlight {
             font-family: 'Dancing Script', cursive;
-            font-size: 3rem;
+            font-size: 3.1rem;
             color: var(--cert-text-highlight);
-            border-bottom: 2px solid var(--cert-border-outer);
+            border-bottom: 3px solid var(--cert-border-outer);
             display: inline-block;
-            padding: 0 20px;
-            margin: 10px 0;
+            padding: 2px 36px 14px 36px;
             font-weight: 700;
-            line-height: 1.1;
+            line-height: 1.35;
+            white-space: nowrap;
+            overflow: visible;
+            transition: font-size 0.2s ease, padding 0.2s ease;
         }
 
         .roast-text {
             font-family: 'Poppins', sans-serif;
             font-weight: 600;
             color: var(--cert-text-highlight);
-            font-size: 1.15rem;
-            margin: 10px 0;
-            padding: 10px 20px;
+            font-size: 1.05rem;
+            margin: 8px 0;
+            padding: 8px 20px;
             background: rgba(0,0,0,0.04);
             border-radius: 8px;
-            max-width: 90%;
-            border: 1px solid rgba(0,0,0,0.05);
+            max-width: 92%;
+            border: 1px solid rgba(0,0,0,0.06);
+            line-height: 1.35;
+            word-break: break-word;
+            overflow: visible;
         }
 
         .cert-footer {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            padding: 0 10px;
+            padding: 0 12px;
             position: relative;
             z-index: 10;
-            margin-top: 10px;
+            margin-top: 6px;
         }
 
         .signature-block {
             text-align: center;
-            width: 220px;
+            width: 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: visible;
         }
 
-        .signature-text {
+        .signature-cursive {
             font-family: 'Great Vibes', cursive;
-            font-size: 2.2rem;
+            font-size: 2.1rem;
             color: #1e3a8a; 
-            border-bottom: 1px solid var(--cert-text-dark);
-            height: 45px; 
-            line-height: 55px; 
+            border-bottom: 2px solid var(--cert-text-dark);
+            width: 100%;
+            min-height: 54px; 
+            line-height: 44px; 
+            padding: 0 8px 12px 8px;
             margin-bottom: 5px;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            overflow: visible;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            transition: font-size 0.2s ease;
         }
 
-        #display-date {
+        .date-display {
             font-family: 'Oswald', sans-serif;
-            font-size: 1.3rem;
-            letter-spacing: 1px;
+            font-size: 1.25rem;
+            letter-spacing: 1.5px;
             color: var(--cert-text-dark);
+            border-bottom: 2px solid var(--cert-text-dark);
+            width: 100%;
+            min-height: 54px;
+            line-height: 44px;
+            padding: 0 8px 10px 8px;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            overflow: visible;
         }
 
         .signature-label {
             font-family: 'Poppins', sans-serif;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: var(--cert-text-dark);
             font-weight: 600;
             text-transform: uppercase;
@@ -228,128 +278,200 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) rotate(-25deg);
+            transform: translate(-50%, -50%) rotate(-24deg);
+            transform-origin: center center;
             color: var(--cert-stamp-color);
             font-family: 'Oswald', sans-serif;
-            font-size: 8rem;
+            font-size: 6.8rem;
             font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 4px;
             z-index: 1;
             pointer-events: none;
             user-select: none;
             white-space: nowrap;
+            overflow: visible;
+            text-align: center;
         }
 
-        /* Custom Scrollbar for sleekness */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.2); 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #475569; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #64748b; 
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.25); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        /* Toast animation */
+        #toast {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
         }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 pointer-events-none flex items-center gap-3 bg-slate-900/95 text-white border border-emerald-500/50 px-5 py-3.5 rounded-xl shadow-2xl backdrop-blur-md">
+        <span id="toast-icon" class="text-xl">✅</span>
+        <span id="toast-message" class="text-sm font-medium">Notification</span>
+    </div>
+
     <!-- Navbar -->
-    <nav class="w-full py-4 backdrop-blur-lg bg-black/40 border-b border-white/10 sticky top-0 z-50 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
+    <nav class="w-full py-4 backdrop-blur-xl bg-black/50 border-b border-white/10 sticky top-0 z-40 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
                 <span class="text-3xl animate-bounce">🔥</span>
-                <h1 class="text-xl md:text-2xl font-bold font-['Oswald'] tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-orange-500 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    BARBAADI.COM
-                </h1>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold font-['Oswald'] tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-red-400 via-orange-400 to-amber-300">
+                        BARBAADI.COM
+                    </h1>
+                    <p class="text-[10px] text-gray-400 tracking-widest uppercase font-mono hidden sm:block">Ministry of Official Roasts</p>
+                </div>
             </div>
             <div class="hidden md:flex gap-6 items-center">
-                <a href="#generator" class="text-sm font-medium text-gray-300 hover:text-white transition">Generator</a>
-                <a href="#how-it-works" class="text-sm font-medium text-gray-300 hover:text-white transition">How it Works</a>
-                <a href="#wall-of-shame" class="text-sm font-medium text-gray-300 hover:text-white transition">Wall of Shame</a>
+                <a href="#generator" class="text-sm font-medium text-gray-300 hover:text-orange-400 transition">Generator</a>
+                <a href="#presets" class="text-sm font-medium text-gray-300 hover:text-orange-400 transition">Roast Presets</a>
+                <a href="#how-it-works" class="text-sm font-medium text-gray-300 hover:text-orange-400 transition">How it Works</a>
+                <a href="#wall-of-shame" class="text-sm font-medium text-gray-300 hover:text-orange-400 transition">Wall of Shame</a>
             </div>
-            <a href="https://github.com" target="_blank" class="text-sm font-medium bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full text-white flex items-center gap-2 transition-all border border-white/10">
-                <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"></path></svg>
-                <span class="hidden sm:inline">Star Repo</span>
-            </a>
+            <div class="flex items-center gap-3">
+                <a href="https://github.com/bhanu2006-24/barbaadi" target="_blank" rel="noopener noreferrer" class="text-sm font-semibold bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full text-white flex items-center gap-2 transition-all border border-white/15 hover:border-orange-500/50 shadow-sm">
+                    <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"></path></svg>
+                    <span>GitHub</span>
+                    <span class="bg-orange-500/30 text-orange-300 text-xs px-2 py-0.5 rounded-full font-mono">⭐ Star</span>
+                </a>
+            </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="w-full pt-16 pb-12 md:pt-24 md:pb-20 px-4 text-center relative overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-600/20 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+    <section class="w-full pt-14 pb-10 md:pt-20 md:pb-16 px-4 text-center relative overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] bg-red-600/15 rounded-full blur-[140px] -z-10 pointer-events-none"></div>
+        <div class="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
         
-        <div class="inline-block bg-white/10 text-blue-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-6 border border-white/10">
-            🔥 #1 Certificate Generator in India
+        <div class="inline-flex items-center gap-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 text-orange-300 text-xs sm:text-sm font-semibold px-4 py-1.5 rounded-full mb-6 border border-orange-500/30 shadow-inner">
+            <span>🧨</span>
+            <span>Official Barbaadi Praman Patra Generator</span>
+            <span class="bg-orange-500 text-black text-[10px] font-bold px-1.5 py-0.5 rounded">NEW HD PNG</span>
         </div>
         
-        <h1 class="text-5xl md:text-7xl font-bold font-['Oswald'] text-white mb-6 uppercase tracking-tight">
-            Ministry of <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-yellow-500 drop-shadow-lg">Barbaadi</span>
+        <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold font-['Oswald'] text-white mb-5 uppercase tracking-tight">
+            Ministry of <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 drop-shadow-md">Barbaadi</span>
         </h1>
-        <p class="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-10 font-['Poppins'] leading-relaxed">
+        <p class="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-8 font-['Poppins'] leading-relaxed">
             Officially ruin your friends' reputations. Generate high-quality, totally fake, and 100% hilarious certificates for their everyday crimes.
         </p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#generator" class="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold py-4 px-8 rounded-full shadow-[0_0_30px_rgba(239,68,68,0.4)] transform transition hover:-translate-y-1 hover:scale-105 text-lg">
-                Start Roasting Now 👇
+        
+        <div class="flex flex-wrap justify-center gap-3 sm:gap-4">
+            <a href="#generator" class="bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 hover:from-red-500 hover:to-orange-500 text-white font-bold py-3.5 px-7 rounded-xl shadow-[0_0_25px_rgba(239,68,68,0.45)] transform transition hover:-translate-y-0.5 hover:scale-105 text-base flex items-center gap-2">
+                <span>Start Roasting Now</span>
+                <span>👇</span>
             </a>
-            <button id="share-website-btn" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold py-4 px-8 rounded-full transition-all text-lg flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
-                Share with Gang
+            <button id="share-website-btn" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium py-3.5 px-6 rounded-xl transition-all text-base flex items-center justify-center gap-2 backdrop-blur-sm">
+                <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                <span>Share with Gang</span>
             </button>
         </div>
     </section>
 
+    <!-- Quick Presets Strip -->
+    <section id="presets" class="max-w-7xl mx-auto px-4 mb-4">
+        <div class="glass-panel p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-3 border border-white/10">
+            <div class="flex items-center gap-2 text-sm font-semibold text-orange-400 shrink-0">
+                <span>⚡</span>
+                <span>Quick Roast Presets:</span>
+            </div>
+            <div class="flex flex-wrap gap-2 w-full justify-start md:justify-end">
+                <button class="preset-btn text-xs bg-white/5 hover:bg-orange-600/30 hover:border-orange-500/50 border border-white/10 px-3 py-1.5 rounded-lg text-gray-300 hover:text-white transition"
+                    data-victim="Rahul Sharma"
+                    data-vibe="classic"
+                    data-reason="Har plan banakar end moment pe cancel karne par."
+                    data-dest="Narak ka Ticket"
+                    data-signer="Goa Gang">
+                    🏖️ Goa Plan Canceler
+                </button>
+                <button class="preset-btn text-xs bg-white/5 hover:bg-orange-600/30 hover:border-orange-500/50 border border-white/10 px-3 py-1.5 rounded-lg text-gray-300 hover:text-white transition"
+                    data-victim="Sneha Roy"
+                    data-vibe="toxic"
+                    data-reason="Hamesha 'bas 5 min' bolkar ghar pe sone ke liye."
+                    data-dest="Mental Hospital ka Bed"
+                    data-signer="Late Dost">
+                    ⏰ 5-Min Late Lateef
+                </button>
+                <button class="preset-btn text-xs bg-white/5 hover:bg-orange-600/30 hover:border-orange-500/50 border border-white/10 px-3 py-1.5 rounded-lg text-gray-300 hover:text-white transition"
+                    data-victim="Aman Verma"
+                    data-vibe="yellow"
+                    data-reason="Reels share karke khud reply na karne ki aadat par."
+                    data-dest="Tihar Jail ki VIP Cell"
+                    data-signer="Ghosted Gang">
+                    👻 Pro Ghoster
+                </button>
+                <button class="preset-btn text-xs bg-white/5 hover:bg-orange-600/30 hover:border-orange-500/50 border border-white/10 px-3 py-1.5 rounded-lg text-gray-300 hover:text-white transition"
+                    data-victim="Pooja Mehta"
+                    data-vibe="royal"
+                    data-reason="Chup-chap padhai karke top marne aur kisiko na batane ka ghor apradh."
+                    data-dest="Swarg ka VIP Pass"
+                    data-signer="Backbenchers Union">
+                    📚 Silent Topper
+                </button>
+                <button class="preset-btn text-xs bg-white/5 hover:bg-orange-600/30 hover:border-orange-500/50 border border-white/10 px-3 py-1.5 rounded-lg text-gray-300 hover:text-white transition"
+                    data-victim="Rohit Singh"
+                    data-vibe="blue"
+                    data-reason="Diet ka natak karke akele poora pizza khane par."
+                    data-dest="Himalaya ka One-way Ticket"
+                    data-signer="Diet Police">
+                    🍕 Pizza Hypocrite
+                </button>
+            </div>
+        </div>
+    </section>
+
     <!-- Generator Section -->
-    <section id="generator" class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-8 grid grid-cols-1 xl:grid-cols-12 gap-8 items-start scroll-mt-24">
+    <section id="generator" class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 xl:grid-cols-12 gap-8 items-start scroll-mt-24">
         
         <!-- FORM SECTION (Left Side) -->
-        <div class="xl:col-span-4 glass-panel p-6 rounded-2xl shadow-2xl relative overflow-hidden">
+        <div class="xl:col-span-5 glass-panel p-6 rounded-2xl shadow-2xl relative overflow-hidden border border-white/10">
             <!-- Decorative blur blob -->
-            <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-orange-500/20 rounded-full blur-3xl pointer-events-none"></div>
             
-            <h2 class="text-2xl font-bold mb-6 text-white flex items-center gap-2">
-                <span class="text-blue-400">📝</span> Fill Details
-            </h2>
+            <div class="flex items-center justify-between mb-5">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2 font-['Oswald'] tracking-wide">
+                    <span class="text-orange-400">📝</span> CERTIFICATE DETAILS
+                </h2>
+                <button id="reset-form-btn" class="text-xs text-gray-400 hover:text-orange-300 transition flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    <span>Reset</span>
+                </button>
+            </div>
             
-            <div class="space-y-5 relative z-10">
+            <div class="space-y-4 relative z-10 text-sm">
                 <!-- Theme Selector -->
                 <div>
-                    <label class="block text-sm font-medium mb-1.5 text-gray-300">Select Vibe (Theme)</label>
-                    <select id="theme-select" class="w-full p-3.5 rounded-xl input-field font-['Poppins']">
-                        <option value="classic">🧨 Classic Barbaadi (Red/Orange)</option>
-                        <option value="toxic">🐍 Toxic Popat (Neon Green)</option>
-                        <option value="royal">👑 Royal Dhokha (Purple/Gold)</option>
-                        <option value="blue">🥶 Berozgar Blue (Cyan/Blue)</option>
-                        <option value="pink">🎀 Panauti Pink (Hot Pink)</option>
-                        <option value="yellow">⚠️ Chhapri Alert (Yellow/Black)</option>
+                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-gray-300">Select Vibe (Theme)</label>
+                    <select id="theme-select" class="w-full p-3 rounded-xl input-field font-['Poppins'] text-sm">
+                        <option value="classic">🧨 Classic Barbaadi (Red / Parchment)</option>
+                        <option value="toxic">🐍 Toxic Popat (Neon Green / Toxic)</option>
+                        <option value="royal">👑 Royal Dhokha (Purple / Gold)</option>
+                        <option value="blue">🥶 Berozgar Blue (Cyan / Frost)</option>
+                        <option value="pink">🎀 Panauti Pink (Hot Pink / Rose)</option>
+                        <option value="yellow">⚠️ Chhapri Alert (Caution Yellow / Black)</option>
                     </select>
+                </div>
+
+                <!-- Certificate Title -->
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-gray-300">Certificate Title</label>
+                    <input type="text" id="cert-title-input" placeholder="e.g. Praman Patra (Barbaadi)" class="w-full p-3 rounded-xl input-field font-['Poppins']" value="Praman Patra (Barbaadi)" maxlength="32">
                 </div>
 
                 <!-- Victim Name -->
                 <div>
-                    <label class="block text-sm font-medium mb-1.5 text-gray-300">Name of "Mahaan Aatma" (Victim)</label>
-                    <input type="text" id="victim-name" placeholder="e.g. Ramesh Bhai" class="w-full p-3.5 rounded-xl input-field font-['Poppins']" value="Daksh Saini" maxlength="30">
+                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-gray-300">Name of "Mahaan Aatma" (Victim)</label>
+                    <input type="text" id="victim-name" placeholder="e.g. Ramesh Bhai" class="w-full p-3 rounded-xl input-field font-['Poppins']" value="Daksh Saini" maxlength="35">
                 </div>
 
                 <!-- Reason Selector -->
                 <div>
-                    <label class="block text-sm font-medium mb-1.5 text-gray-300">Select Paap / Taunt</label>
-                    <select id="reason-select" class="w-full p-3.5 rounded-xl input-field font-['Poppins']">
-                        <optgroup label="Lovely Taunts (Praise in disguise) 💖">
-                            <option value="Chup-chap padhai karke top marne aur kisiko na batane ka ghor apradh.">Chup-chap padhai karke top marne (Secret Topper).</option>
-                            <option value="Nayi gaadi/phone le li par dosto ko party na dene ki kanjoosi par.">Nayi gaadi/phone le li par party nahi di.</option>
-                            <option value="Gym jaakar achanak se sundar banne aur baakiyon ko complex dene par.">Gym jaakar achanak se sundar banne par.</option>
-                            <option value="Single dosto ke group mein akele relationship mein aane ki gaddari.">Single dosto ko chhodkar relationship mein aana.</option>
-                            <option value="Apni over-smartness aur sundarta se sabko ghayal karne ke jurm mein.">Apni sundarta se sabko ghayal karne ke jurm mein.</option>
-                            <option value="Chup chap successful hoke hum gareeb dosto ko bhool jane par.">Successful hoke dosto ko bhool jane par.</option>
-                        </optgroup>
-                        
+                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-gray-300">Select Crime / Paap / Taunt</label>
+                    <select id="reason-select" class="w-full p-3 rounded-xl input-field font-['Poppins'] text-sm">
                         <optgroup label="Savage Roasts 🔥">
                             <option value="Bina kisi reason ke hawa mein udne ke liye.">Bina kisi reason ke hawa mein udne ke liye.</option>
                             <option value="Har plan banakar end moment pe cancel karne par.">Har plan banakar end moment pe cancel karne par.</option>
@@ -364,115 +486,167 @@
                             <option value="Udhaar ke paise wapas maangne pe gajini ban jane par.">Udhaar ke paise wapas maangne pe gajini ban jane par.</option>
                             <option value="Story pe 'Depressed' likh ke dosto ke sath party karne par.">Story pe 'Depressed' likh ke dosto ke sath party karne par.</option>
                             <option value="Bina nahaaye mehenga deo lagake ghumne ke jurm mein.">Bina nahaaye mehenga deo lagake ghumne ke jurm mein.</option>
-                            <option value="Subah jaldi uthne ka fake alarm lagake sabko jagane par.">Subah jaldi uthne ka fake alarm lagake sabko jagane par.</option>
                             <option value="Bina contribution diye sabse zyada party me khane ke liye.">Bina contribution diye sabse zyada party me khane ke liye.</option>
-                            <option value="Insta pe 'I need space' likhkar fake sympathy lene par.">Insta pe 'I need space' likhkar fake sympathy lene par.</option>
-                            <option value="Ghar walon ke samne shareef banne ka award-winning natak karne par.">Ghar walon ke samne shareef banne ka award-winning natak karne par.</option>
-                            <option value="PUBG/BGMI me noob hoke bhi IGL banne ki koshish karne par.">PUBG/BGMI me noob hoke bhi IGL banne ki koshish karne par.</option>
                             <option value="Snapchat streaks ke liye zinda rehne ke jurm me.">Snapchat streaks ke liye zinda rehne ke jurm me.</option>
                         </optgroup>
                         
-                        <option value="custom" class="text-blue-400 font-bold">✍️ Custom - Apne shabdon mein bezzati karein</option>
+                        <optgroup label="Lovely Taunts (Praise in disguise) 💖">
+                            <option value="Chup-chap padhai karke top marne aur kisiko na batane ka ghor apradh.">Chup-chap padhai karke top marne (Secret Topper).</option>
+                            <option value="Nayi gaadi/phone le li par dosto ko party na dene ki kanjoosi par.">Nayi gaadi/phone le li par party nahi di.</option>
+                            <option value="Gym jaakar achanak se sundar banne aur baakiyon ko complex dene par.">Gym jaakar achanak se sundar banne par.</option>
+                            <option value="Single dosto ke group mein akele relationship mein aane ki gaddari.">Single dosto ko chhodkar relationship mein aana.</option>
+                            <option value="Apni over-smartness aur sundarta se sabko ghayal karne ke jurm mein.">Apni sundarta se sabko ghayal karne ke jurm mein.</option>
+                            <option value="Chup chap successful hoke hum gareeb dosto ko bhool jane par.">Successful hoke dosto ko bhool jane par.</option>
+                        </optgroup>
+                        
+                        <option value="custom" class="text-orange-400 font-bold">✍️ Custom - Apne shabdon mein bezzati karein</option>
                     </select>
                     
                     <!-- Hidden Custom Input -->
-                    <div id="custom-reason-container" class="hidden mt-3">
-                        <input type="text" id="custom-reason-input" placeholder="Type your custom roast/taunt here (max 75 chars)" class="w-full p-3.5 rounded-xl input-field font-['Poppins'] text-sm" maxlength="75">
+                    <div id="custom-reason-container" class="hidden mt-2">
+                        <textarea id="custom-reason-input" rows="2" placeholder="Type your custom roast/taunt here (max 90 chars)..." class="w-full p-3 rounded-xl input-field font-['Poppins'] text-sm" maxlength="90"></textarea>
                     </div>
                 </div>
 
                 <!-- Destination Selector -->
                 <div>
-                    <label class="block text-sm font-medium mb-1.5 text-gray-300">Final Destination</label>
-                    <select id="destination-select" class="w-full p-3.5 rounded-xl input-field font-['Poppins']">
+                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-gray-300">Final Destination / Punishment</label>
+                    <select id="destination-select" class="w-full p-3 rounded-xl input-field font-['Poppins'] text-sm">
                         <option value="Narak ka Ticket">🔥 Narak ka Ticket</option>
                         <option value="Swarg ka VIP Pass">✨ Swarg ka VIP Pass</option>
                         <option value="Mental Hospital ka Bed">🏥 Mental Hospital ka Bed</option>
                         <option value="Himalaya ka One-way Ticket">🏔️ Himalaya ka One-way Ticket</option>
                         <option value="Tihar Jail ki VIP Cell">🚓 Tihar Jail ki VIP Cell</option>
+                        <option value="Friendzone ka Lifetime Member">💔 Friendzone ka Lifetime Member</option>
+                        <option value="Goa Trip Cancellation Cell">🏖️ Goa Trip Cancellation Cell</option>
                     </select>
                 </div>
 
-                <!-- Signer Name -->
+                <!-- Watermark Stamp Text -->
                 <div>
-                    <label class="block text-sm font-medium mb-1.5 text-gray-300">Authorized By (Your Name)</label>
-                    <input type="text" id="signer-name" placeholder="e.g. Tera Baap" class="w-full p-3.5 rounded-xl input-field font-['Poppins']" value="Your Best Friend" maxlength="25">
+                    <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-gray-300">Watermark Stamp Text</label>
+                    <input type="text" id="stamp-input" placeholder="e.g. MAHA POPAT" class="w-full p-3 rounded-xl input-field font-['Poppins'] text-sm uppercase" value="OFFICIALLY BARBAAD" maxlength="22">
+                </div>
+
+                <!-- Grid for Signer & Date -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-gray-300">Authorized By (Signer)</label>
+                        <input type="text" id="signer-name" placeholder="e.g. Tera Baap" class="w-full p-3 rounded-xl input-field font-['Poppins'] text-sm" value="Your Best Friend" maxlength="25">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider mb-1 text-gray-300">Date of Ruin</label>
+                        <input type="text" id="custom-date-input" placeholder="e.g. 08 Oct 2026" class="w-full p-3 rounded-xl input-field font-['Poppins'] text-sm" maxlength="20">
+                    </div>
+                </div>
+
+                <!-- Action Download Buttons -->
+                <div class="pt-3 space-y-2.5">
+                    <!-- Primary: PNG Download -->
+                    <button id="download-png-btn" class="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.35)] transform transition hover:-translate-y-0.5 flex items-center justify-center gap-2 text-base">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <span>Download HD PNG (Clear & Unstretched)</span>
+                    </button>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <!-- Secondary: PDF Download -->
+                        <button id="download-pdf-btn" class="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-semibold py-3 px-3 rounded-xl shadow-md transition hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            <span>Download A4 PDF</span>
+                        </button>
+
+                        <!-- Copy to Clipboard -->
+                        <button id="copy-img-btn" class="w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold py-3 px-3 rounded-xl transition hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm">
+                            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                            <span>Copy Image</span>
+                        </button>
+                    </div>
+
+                    <!-- WhatsApp Direct Share -->
+                    <button id="whatsapp-share-btn" class="w-full bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#4ade80] hover:text-white font-semibold py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-2 text-xs">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                        <span>Share Roast on WhatsApp</span>
+                    </button>
                 </div>
                 
-                <!-- Download Button -->
-                <button id="download-btn" class="w-full mt-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-4 px-4 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.4)] transform transition hover:-translate-y-1 flex items-center justify-center gap-2 text-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                    Download High-Res PDF
-                </button>
-                <p class="text-xs text-gray-400 text-center mt-2">100% Free • No watermark • A4 Landscape Ready</p>
+                <p class="text-[11px] text-gray-400 text-center mt-2">
+                    🔒 100% Client-side • Zero Watermark • Crisp 3X HD Output
+                </p>
             </div>
         </div>
 
         <!-- PREVIEW SECTION (Right Side) -->
-        <div class="xl:col-span-8 flex flex-col items-center w-full">
+        <div class="xl:col-span-7 flex flex-col items-center w-full">
             
-            <div class="w-full flex justify-between items-end mb-4 px-2">
-                <h2 class="text-2xl font-bold text-white">Live Preview</h2>
-                <span class="text-sm text-blue-300 bg-blue-900/40 px-3 py-1 rounded-full border border-blue-500/30">Auto-scales to fit screen</span>
+            <div class="w-full flex justify-between items-center mb-3 px-1">
+                <div class="flex items-center gap-2">
+                    <h2 class="text-xl font-bold text-white font-['Oswald'] tracking-wide">LIVE PREVIEW</h2>
+                    <span id="resolution-badge" class="text-[11px] text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded-md font-mono">
+                        900 × 650 (HD 3X)
+                    </span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-400 hidden sm:inline">Auto-adapts to screen</span>
+                </div>
             </div>
             
-            <!-- Wrapper to handle CSS scaling based on screen size -->
-            <div class="preview-wrapper bg-black/40 p-4 sm:p-8 rounded-2xl border border-white/10 w-full overflow-hidden flex justify-center shadow-2xl" id="preview-wrapper">
+            <!-- Scaling Wrapper to display 900x650 cleanly without scrollbars -->
+            <div class="preview-wrapper bg-black/50 p-2 sm:p-5 rounded-2xl border border-white/10 w-full shadow-2xl flex justify-center" id="preview-wrapper">
                 
-                <!-- THE ACTUAL CERTIFICATE (Fixed 900x650) -->
+                <!-- THE ACTUAL CERTIFICATE (Strict 900x650 Native Coordinate Space) -->
                 <div id="certificate-container">
                     <div class="cert-border">
                         <div class="cert-inner-border">
                             
                             <!-- Giant Watermark Stamp -->
-                            <div class="stamp" id="stamp-text">MAHA POPAT</div>
+                            <div class="stamp" id="stamp-text">OFFICIALLY BARBAAD</div>
 
                             <!-- Header -->
                             <div class="cert-header">
-                                <div class="cert-title">Praman Patra (Barbaadi)</div>
+                                <div class="cert-title" id="display-title">Praman Patra (Barbaadi)</div>
                                 <div class="cert-subtitle">Recognizing ultimate failure and legendary popat-giri</div>
                             </div>
                             
                             <!-- Body -->
                             <div class="cert-body">
-                                <p>Yeh praman patra poore hosh-o-hawas mein<br>
-                                Shree / Shreemati</p>
+                                <p style="font-size: 1.05rem; letter-spacing: 0.5px;">Yeh praman patra poore hosh-o-hawas mein<br>Shree / Shreemati</p>
                                 
-                                <div><span class="name-highlight" id="display-victim">Daksh Saini</span></div>
-                                
-                                <p>ko pradan kiya jata hai.</p>
-                                
-                                <div class="roast-text" style="font-family: 'Poppins', sans-serif; font-weight: 600; color: var(--cert-text-highlight); font-size: 1.1rem; margin: 5px 0; padding: 8px 15px; background: rgba(0,0,0,0.04); border-radius: 8px; max-width: 90%; border: 1px solid rgba(0,0,0,0.05);">
-                                    Inki Uplabdhi: "<span id="display-reason">Bina kisi reason ke hawa mein udne ke liye.</span>"
+                                <div class="name-wrapper">
+                                    <span class="name-highlight" id="display-victim">Daksh Saini</span>
                                 </div>
                                 
-                                <p class="text-sm mt-2 max-w-2xl">
-                                    Society ghoshit karti hai ki aapka <strong id="display-destination">'Narak ka Ticket'</strong> confirm ho chuka hai.<br>
+                                <p style="font-size: 1.05rem;">ko pradan kiya jata hai.</p>
+                                
+                                <div class="roast-text">
+                                    Inki Mahaan Uplabdhi: "<span id="display-reason">Bina kisi reason ke hawa mein udne ke liye.</span>"
+                                </div>
+                                
+                                <p style="font-size: 0.88rem; max-width: 680px; margin-top: 6px; line-height: 1.35;">
+                                    Society ghoshit karti hai ki aapka <strong id="display-destination" style="color: var(--cert-text-highlight);">'Narak ka Ticket'</strong> confirm ho chuka hai.<br>
                                     Aapki paap ki limit cross ho chuki hai, kripya sudhar jayein (jo ki absolutely namumkin hai).
                                 </p>
                             </div>
 
                             <!-- Footer -->
                             <div class="cert-footer">
+                                <!-- Date block -->
                                 <div class="signature-block">
-                                    <div class="signature-text" id="display-date"></div>
+                                    <div class="date-display" id="display-date"></div>
                                     <div class="signature-label">Date of Ruin</div>
                                 </div>
                                 
-                                <!-- Decorative Seal / Spacer -->
-                                <div class="flex flex-col items-center justify-end pb-2 opacity-80">
-                                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--cert-border-outer)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <!-- Decorative Seal / Emblem -->
+                                <div class="flex flex-col items-center justify-end pb-1 opacity-85">
+                                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--cert-border-outer)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                                         <path d="M12 8v4"/>
                                         <path d="M12 16h.01"/>
                                     </svg>
                                 </div>
 
+                                <!-- Signature block -->
                                 <div class="signature-block">
-                                    <!-- Full Cursive for Signature -->
-                                    <div class="signature-text" id="display-signer">Your Best Friend</div>
+                                    <div class="signature-cursive" id="display-signer">Your Best Friend</div>
                                     <div class="signature-label">Authorized By (Dost)</div>
                                 </div>
                             </div>
@@ -481,99 +655,121 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Hint below preview -->
+            <div class="w-full mt-3 flex items-center justify-between text-xs text-gray-400 px-2">
+                <span>💡 Tip: Click "Download HD PNG" for crisp WhatsApp status & chats</span>
+                <span class="font-mono">A4 Ratio: 1.385 (Standard)</span>
+            </div>
             
         </div>
     </section>
 
     <!-- How It Works Section -->
-    <section id="how-it-works" class="w-full py-20 bg-black/30 border-t border-white/5 scroll-mt-20">
+    <section id="how-it-works" class="w-full py-16 bg-black/40 border-t border-white/5 scroll-mt-20">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold font-['Oswald'] text-white mb-12 uppercase tracking-wide">How to Ruin a Life (In 3 Steps)</h2>
+            <h2 class="text-3xl md:text-4xl font-bold font-['Oswald'] text-white mb-12 uppercase tracking-wide">
+                How to Ruin a Friend (In 3 Steps) 🔥
+            </h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="glass-panel p-8 rounded-2xl relative transform transition hover:-translate-y-2">
+                <div class="glass-panel p-8 rounded-2xl relative transform transition hover:-translate-y-2 border border-white/10">
                     <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center text-xl font-bold text-white shadow-lg border-2 border-black/50">1</div>
-                    <h3 class="text-xl font-bold text-white mb-4 mt-4">Pick the Target 🎯</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Enter the name of that one friend who always cancels plans at the last minute or eats your food.</p>
+                    <h3 class="text-xl font-bold text-white mb-3 mt-4">Pick the Target 🎯</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Enter the name of that one friend who always cancels plans at the last minute, ignores texts, or eats your food.</p>
                 </div>
-                <div class="glass-panel p-8 rounded-2xl relative transform transition hover:-translate-y-2">
+                <div class="glass-panel p-8 rounded-2xl relative transform transition hover:-translate-y-2 border border-white/10">
                     <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center text-xl font-bold text-white shadow-lg border-2 border-black/50">2</div>
-                    <h3 class="text-xl font-bold text-white mb-4 mt-4">Select the Crime 📝</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Choose from our massive list of legendary Indian roasts, lovely taunts, or write your own custom insult.</p>
+                    <h3 class="text-xl font-bold text-white mb-3 mt-4">Select the Crime 📝</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Choose from our massive library of legendary Indian roasts, sweet taunts, or type your custom personalized insult.</p>
                 </div>
-                <div class="glass-panel p-8 rounded-2xl relative transform transition hover:-translate-y-2">
-                    <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-full flex items-center justify-center text-xl font-bold text-white shadow-lg border-2 border-black/50">3</div>
-                    <h3 class="text-xl font-bold text-white mb-4 mt-4">Export & Expose 📤</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Download the high-res PDF and drop it in the WhatsApp group. Grab popcorn and watch the chaos unfold.</p>
+                <div class="glass-panel p-8 rounded-2xl relative transform transition hover:-translate-y-2 border border-white/10">
+                    <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-full flex items-center justify-center text-xl font-bold text-white shadow-lg border-2 border-black/50">3</div>
+                    <h3 class="text-xl font-bold text-white mb-3 mt-4">Export & Expose 📤</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Download in 3X Ultra-Clear PNG or Print-Ready PDF and drop it in the WhatsApp group. Grab popcorn and watch the chaos!</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Wall of Shame (Testimonials) -->
-    <section id="wall-of-shame" class="w-full py-20 scroll-mt-20">
+    <section id="wall-of-shame" class="w-full py-16 scroll-mt-20">
         <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-bold font-['Oswald'] text-center text-white mb-12 uppercase tracking-wide">Wall of Shame 🏆</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <h2 class="text-3xl md:text-4xl font-bold font-['Oswald'] text-center text-white mb-12 uppercase tracking-wide">
+                Wall of Shame 🏆
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Card 1 -->
-                <div class="bg-white/5 border border-white/10 p-6 rounded-xl hover:bg-white/10 transition-colors">
+                <div class="glass-panel border border-white/10 p-6 rounded-2xl hover:border-orange-500/40 transition-colors">
                     <div class="flex text-yellow-400 mb-3 text-sm">★★★★★</div>
-                    <p class="text-gray-300 text-sm italic mb-4">"My best friend gave me this because I said 'bas 5 min' and arrived 2 hours late. I have framed it in my room."</p>
-                    <p class="text-white font-bold text-sm">- Late Lateef Rahul</p>
+                    <p class="text-gray-300 text-sm italic mb-4 leading-relaxed">"My best friend gave me this because I said 'bas 5 min' and arrived 2 hours late. I have framed it in my hostel room."</p>
+                    <p class="text-orange-400 font-bold text-sm">- Late Lateef Rahul</p>
                 </div>
                 <!-- Card 2 -->
-                <div class="bg-white/5 border border-white/10 p-6 rounded-xl hover:bg-white/10 transition-colors">
+                <div class="glass-panel border border-white/10 p-6 rounded-2xl hover:border-orange-500/40 transition-colors">
                     <div class="flex text-yellow-400 mb-3 text-sm">★★★★★</div>
-                    <p class="text-gray-300 text-sm italic mb-4">"Used this to officially declare my brother a 'Chhapri' for his new yellow hair colour. Family WhatsApp group went crazy."</p>
-                    <p class="text-white font-bold text-sm">- Sneha D.</p>
+                    <p class="text-gray-300 text-sm italic mb-4 leading-relaxed">"Used this to officially declare my brother a 'Chhapri' for his new yellow hair colour. Family WhatsApp group went crazy."</p>
+                    <p class="text-orange-400 font-bold text-sm">- Sneha D.</p>
                 </div>
                 <!-- Card 3 -->
-                <div class="bg-white/5 border border-white/10 p-6 rounded-xl hover:bg-white/10 transition-colors">
+                <div class="glass-panel border border-white/10 p-6 rounded-2xl hover:border-orange-500/40 transition-colors">
                     <div class="flex text-yellow-400 mb-3 text-sm">★★★★★</div>
-                    <p class="text-gray-300 text-sm italic mb-4">"Perfect tool to roast my roommate who joined the gym but only goes there to click mirror selfies in the changing room."</p>
-                    <p class="text-white font-bold text-sm">- Gym Bro Amit</p>
+                    <p class="text-gray-300 text-sm italic mb-4 leading-relaxed">"Perfect tool to roast my roommate who joined the gym but only goes there to click mirror selfies in the changing room."</p>
+                    <p class="text-orange-400 font-bold text-sm">- Gym Bro Amit</p>
                 </div>
                 <!-- Card 4 -->
-                <div class="bg-white/5 border border-white/10 p-6 rounded-xl hover:bg-white/10 transition-colors">
+                <div class="glass-panel border border-white/10 p-6 rounded-2xl hover:border-orange-500/40 transition-colors">
                     <div class="flex text-yellow-400 mb-3 text-sm">★★★★★</div>
-                    <p class="text-gray-300 text-sm italic mb-4">"Got the 'Toxic Popat' award for ignoring texts while being active on Insta. 10/10 would ruin my reputation again."</p>
-                    <p class="text-white font-bold text-sm">- Ignored Priya</p>
+                    <p class="text-gray-300 text-sm italic mb-4 leading-relaxed">"Got the 'Toxic Popat' award for ignoring texts while being active on Insta. 10/10 would ruin my reputation again."</p>
+                    <p class="text-orange-400 font-bold text-sm">- Ignored Priya</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="w-full py-12 border-t border-white/10 bg-black/50 text-center relative overflow-hidden mt-auto">
+    <footer class="w-full py-12 border-t border-white/10 bg-black/70 text-center relative overflow-hidden mt-auto">
         <div class="max-w-7xl mx-auto px-4 flex flex-col items-center">
-            <div class="text-4xl mb-4 hover:scale-110 transition-transform cursor-pointer">💀</div>
-            <h3 class="font-['Oswald'] text-2xl text-white tracking-widest mb-3 uppercase">Barbaadi.com</h3>
-            <p class="text-gray-400 text-sm mb-8 max-w-md leading-relaxed">
-                Created for absolute fun. If you take this seriously, you probably need a real certificate. Ruin responsibly!
+            <div class="text-4xl mb-3 hover:scale-110 transition-transform cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">💀</div>
+            <h3 class="font-['Oswald'] text-2xl text-white tracking-widest mb-2 uppercase">Barbaadi.com</h3>
+            <p class="text-gray-400 text-sm mb-6 max-w-md leading-relaxed">
+                Created purely for humor and fun among friends. If you take this seriously, you probably need a real certificate. Ruin responsibly!
             </p>
-            <div class="flex flex-wrap justify-center gap-6 text-sm text-gray-500 font-medium">
-                <a href="#" class="hover:text-white transition">Privacy Policy (Lol JK)</a>
-                <span class="hidden sm:inline">•</span>
-                <a href="https://github.com" target="_blank" class="hover:text-white transition">GitHub Repository</a>
-                <span class="hidden sm:inline">•</span>
-                <span>Made with ☕ & 🤬 in India</span>
+            <div class="flex flex-wrap justify-center items-center gap-5 text-sm text-gray-400 font-medium mb-6">
+                <a href="#generator" class="hover:text-orange-400 transition">Generator</a>
+                <span>•</span>
+                <a href="#presets" class="hover:text-orange-400 transition">Presets</a>
+                <span>•</span>
+                <a href="https://github.com/bhanu2006-24/barbaadi" target="_blank" rel="noopener noreferrer" class="hover:text-white transition flex items-center gap-1">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"></path></svg>
+                    <span>bhanu2006-24/barbaadi</span>
+                </a>
             </div>
+            <p class="text-xs text-gray-500">
+                Created with ☕ & 🤬 by <a href="https://github.com/bhanu2006-24" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white underline">Bhanu Pratap Saini</a>
+            </p>
         </div>
     </footer>
 
+    <!-- Logic Script -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // DOM Elements
+            // DOM Input Elements
             const inputs = {
+                title: document.getElementById('cert-title-input'),
                 victim: document.getElementById('victim-name'),
                 reason: document.getElementById('reason-select'),
                 customReason: document.getElementById('custom-reason-input'),
                 destination: document.getElementById('destination-select'),
                 signer: document.getElementById('signer-name'),
+                date: document.getElementById('custom-date-input'),
+                stamp: document.getElementById('stamp-input'),
                 theme: document.getElementById('theme-select')
             };
             
+            // DOM Display Elements in Certificate
             const displays = {
+                title: document.getElementById('display-title'),
                 victim: document.getElementById('display-victim'),
                 reason: document.getElementById('display-reason'),
                 destination: document.getElementById('display-destination'),
@@ -582,49 +778,155 @@
                 stamp: document.getElementById('stamp-text')
             };
             
+            // Containers & Action Buttons
             const customReasonContainer = document.getElementById('custom-reason-container');
-            const downloadBtn = document.getElementById('download-btn');
-            const shareBtn = document.getElementById('share-website-btn');
+            const downloadPngBtn = document.getElementById('download-png-btn');
+            const downloadPdfBtn = document.getElementById('download-pdf-btn');
+            const copyImgBtn = document.getElementById('copy-img-btn');
+            const whatsappShareBtn = document.getElementById('whatsapp-share-btn');
+            const shareWebsiteBtn = document.getElementById('share-website-btn');
+            const resetBtn = document.getElementById('reset-form-btn');
             const certificateContainer = document.getElementById('certificate-container');
             const previewWrapper = document.getElementById('preview-wrapper');
 
-            // Themes Configuration
+            // Themes Palette Configuration
             const themes = {
-                classic: { bg: '#fff5e6', outer: '#b91c1c', inner: '#ea580c', dark: '#1a1a1a', hl: '#991b1b', stamp: 'rgba(185, 28, 28, 0.12)', stampText: 'OFFICIALLY BARBAAD' },
-                toxic: { bg: '#f0fdf4', outer: '#16a34a', inner: '#84cc16', dark: '#14532d', hl: '#15803d', stamp: 'rgba(22, 163, 74, 0.12)', stampText: 'TOXIC POPAT' },
-                royal: { bg: '#faf5ff', outer: '#7e22ce', inner: '#eab308', dark: '#3b0764', hl: '#6b21a8', stamp: 'rgba(126, 34, 206, 0.1)', stampText: 'ROYAL DHOKHA' },
-                blue: { bg: '#ecfeff', outer: '#0891b2', inner: '#06b6d4', dark: '#164e63', hl: '#0e7490', stamp: 'rgba(8, 145, 178, 0.12)', stampText: 'BEROZGAR' },
-                pink: { bg: '#fdf2f8', outer: '#db2777', inner: '#f43f5e', dark: '#831843', hl: '#be185d', stamp: 'rgba(219, 39, 119, 0.12)', stampText: 'PANAUTI' },
-                yellow: { bg: '#fefce8', outer: '#ca8a04', inner: '#111827', dark: '#111827', hl: '#854d0e', stamp: 'rgba(202, 138, 4, 0.15)', stampText: 'CHHAPRI ALERT' }
+                classic: { 
+                    bg: '#fff8eb', 
+                    outer: '#b91c1c', 
+                    inner: '#ea580c', 
+                    dark: '#18181b', 
+                    hl: '#991b1b', 
+                    stamp: 'rgba(185, 28, 28, 0.12)', 
+                    defaultStamp: 'OFFICIALLY BARBAAD' 
+                },
+                toxic: { 
+                    bg: '#f0fdf4', 
+                    outer: '#16a34a', 
+                    inner: '#65a30d', 
+                    dark: '#14532d', 
+                    hl: '#15803d', 
+                    stamp: 'rgba(22, 163, 74, 0.12)', 
+                    defaultStamp: 'TOXIC POPAT' 
+                },
+                royal: { 
+                    bg: '#faf5ff', 
+                    outer: '#7e22ce', 
+                    inner: '#d97706', 
+                    dark: '#3b0764', 
+                    hl: '#6b21a8', 
+                    stamp: 'rgba(126, 34, 206, 0.11)', 
+                    defaultStamp: 'ROYAL DHOKHA' 
+                },
+                blue: { 
+                    bg: '#ecfeff', 
+                    outer: '#0891b2', 
+                    inner: '#0284c7', 
+                    dark: '#164e63', 
+                    hl: '#0e7490', 
+                    stamp: 'rgba(8, 145, 178, 0.12)', 
+                    defaultStamp: 'BEROZGAR BLUE' 
+                },
+                pink: { 
+                    bg: '#fdf2f8', 
+                    outer: '#db2777', 
+                    inner: '#e11d48', 
+                    dark: '#831843', 
+                    hl: '#be185d', 
+                    stamp: 'rgba(219, 39, 119, 0.12)', 
+                    defaultStamp: 'PANAUTI CERTIFIED' 
+                },
+                yellow: { 
+                    bg: '#fefce8', 
+                    outer: '#ca8a04', 
+                    inner: '#18181b', 
+                    dark: '#18181b', 
+                    hl: '#854d0e', 
+                    stamp: 'rgba(202, 138, 4, 0.14)', 
+                    defaultStamp: 'CHHAPRI ALERT' 
+                }
             };
 
-            // Set current date (Indian Format)
-            displays.date.textContent = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+            // Set current date formatted cleanly
+            const todayFormatted = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+            inputs.date.value = todayFormatted;
+            displays.date.textContent = todayFormatted;
 
-            // Scale the certificate to fit the screen visually
+            // Toast Alert Utility
+            const toastEl = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+            let toastTimer = null;
+
+            function showToast(message, icon = '✅') {
+                if (toastTimer) clearTimeout(toastTimer);
+                toastMsg.textContent = message;
+                toastIcon.textContent = icon;
+                toastEl.classList.remove('opacity-0', 'translate-y-24', 'pointer-events-none');
+                toastEl.classList.add('opacity-100', 'translate-y-0');
+                toastTimer = setTimeout(() => {
+                    toastEl.classList.remove('opacity-100', 'translate-y-0');
+                    toastEl.classList.add('opacity-0', 'translate-y-24', 'pointer-events-none');
+                }, 3500);
+            }
+
+            // Dynamically scale the preview certificate visually to fit screen perfectly
             function resizePreview() {
-                // The fixed size of the certificate
                 const targetWidth = 900; 
                 const targetHeight = 650;
                 
-                // Available width in the wrapper
-                const wrapperWidth = previewWrapper.clientWidth - 32; // minus padding
+                // Account for container padding (approx 16px on mobile, 40px on desktop)
+                const isMobile = window.innerWidth < 640;
+                const padding = isMobile ? 16 : 40;
+                const wrapperWidth = previewWrapper.clientWidth - padding;
                 
-                // Calculate scale (max 1)
-                const scale = Math.min(wrapperWidth / targetWidth, 1);
+                // Calculate exact scale factor (clamped max 1.0)
+                const scale = Math.max(0.28, Math.min(wrapperWidth / targetWidth, 1.0));
                 
                 // Apply CSS Transform
                 certificateContainer.style.transform = `scale(${scale})`;
                 
-                // Adjust wrapper height so it doesn't leave huge empty gaps when scaled down
-                previewWrapper.style.height = `${(targetHeight * scale) + 64}px`; // 64 is padding
+                // Set explicit height on the wrapper to eliminate empty spaces or clipping
+                const computedHeight = Math.ceil(targetHeight * scale) + (isMobile ? 24 : 40);
+                previewWrapper.style.height = `${computedHeight}px`;
             }
 
             window.addEventListener('resize', resizePreview);
 
-            // Update Theme Colors
+            // Dynamic Font Sizing for long victim names
+            function adjustVictimFontSize(name) {
+                const len = name.length;
+                if (len <= 15) {
+                    displays.victim.style.fontSize = '3.1rem';
+                    displays.victim.style.paddingBottom = '14px';
+                } else if (len <= 22) {
+                    displays.victim.style.fontSize = '2.5rem';
+                    displays.victim.style.paddingBottom = '12px';
+                } else if (len <= 28) {
+                    displays.victim.style.fontSize = '2.0rem';
+                    displays.victim.style.paddingBottom = '10px';
+                } else {
+                    displays.victim.style.fontSize = '1.65rem';
+                    displays.victim.style.paddingBottom = '8px';
+                }
+            }
+
+            // Dynamic Font Sizing for signer name to avoid cutoff
+            function adjustSignerFontSize(name) {
+                const len = name.length;
+                if (len <= 15) {
+                    displays.signer.style.fontSize = '2.1rem';
+                } else if (len <= 20) {
+                    displays.signer.style.fontSize = '1.75rem';
+                } else {
+                    displays.signer.style.fontSize = '1.45rem';
+                }
+            }
+
+            // Update Theme Colors & Defaults
             function updateTheme() {
-                const t = themes[inputs.theme.value];
+                const currentThemeKey = inputs.theme.value;
+                const t = themes[currentThemeKey] || themes.classic;
                 const root = certificateContainer;
                 
                 root.style.setProperty('--cert-bg', t.bg);
@@ -634,31 +936,68 @@
                 root.style.setProperty('--cert-text-highlight', t.hl);
                 root.style.setProperty('--cert-stamp-color', t.stamp);
                 
-                displays.stamp.textContent = t.stampText;
+                // If stamp input wasn't edited manually, set theme default
+                if (!inputs.stamp.dataset.userEdited) {
+                    inputs.stamp.value = t.defaultStamp;
+                    displays.stamp.textContent = t.defaultStamp;
+                }
             }
 
-            // Update Text 
+            // Update Live Preview Text
             function updateText() {
-                displays.victim.textContent = inputs.victim.value.trim() || "Mahaan Aatma";
+                // Title
+                displays.title.textContent = inputs.title.value.trim() || "Praman Patra (Barbaadi)";
+
+                // Victim Name
+                const victimName = inputs.victim.value.trim() || "Mahaan Aatma";
+                displays.victim.textContent = victimName;
+                adjustVictimFontSize(victimName);
                 
-                // Handle Custom Reason Logic
+                // Reason / Crime
                 if (inputs.reason.value === 'custom') {
-                    displays.reason.textContent = inputs.customReason.value || "Khud ki bezzati type karein...";
+                    displays.reason.textContent = inputs.customReason.value.trim() || "Apne gande karmo ke jurm mein.";
                 } else {
                     displays.reason.textContent = inputs.reason.value;
                 }
                 
+                // Destination & Signer & Date
                 displays.destination.textContent = `'${inputs.destination.value}'`;
-                displays.signer.textContent = inputs.signer.value.trim() || "Anonymous Dost";
+                const signerName = inputs.signer.value.trim() || "Anonymous Dost";
+                displays.signer.textContent = signerName;
+                adjustSignerFontSize(signerName);
+                displays.date.textContent = inputs.date.value.trim() || todayFormatted;
+
+                // Stamp Text
+                const stampVal = (inputs.stamp.value.trim() || "OFFICIALLY BARBAAD").toUpperCase();
+                displays.stamp.textContent = stampVal;
+                
+                // Scale stamp text if long
+                if (stampVal.length > 16) {
+                    displays.stamp.style.fontSize = '5rem';
+                } else if (stampVal.length > 12) {
+                    displays.stamp.style.fontSize = '5.8rem';
+                } else {
+                    displays.stamp.style.fontSize = '6.8rem';
+                }
             }
 
-            // Event Listeners for Live Preview
+            // Event Listeners for Live Inputs
+            inputs.title.addEventListener('input', updateText);
             inputs.victim.addEventListener('input', updateText);
+            inputs.destination.addEventListener('change', updateText);
+            inputs.signer.addEventListener('input', updateText);
+            inputs.date.addEventListener('input', updateText);
             
-            // Toggle custom input visibility
+            inputs.stamp.addEventListener('input', () => {
+                inputs.stamp.dataset.userEdited = "true";
+                updateText();
+            });
+
+            // Toggle custom reason input visibility
             inputs.reason.addEventListener('change', (e) => {
                 if (e.target.value === 'custom') {
                     customReasonContainer.classList.remove('hidden');
+                    inputs.customReason.focus();
                 } else {
                     customReasonContainer.classList.add('hidden');
                 }
@@ -666,125 +1005,321 @@
             });
             
             inputs.customReason.addEventListener('input', updateText);
-            inputs.destination.addEventListener('change', updateText);
-            inputs.signer.addEventListener('input', updateText);
-            inputs.theme.addEventListener('change', updateTheme);
+            inputs.theme.addEventListener('change', () => {
+                inputs.stamp.removeAttribute('data-user-edited');
+                updateTheme();
+            });
 
-            // PDF Generation Logic
-            downloadBtn.addEventListener('click', async () => {
-                const originalText = downloadBtn.innerHTML;
-                downloadBtn.innerHTML = "Generating... ⏳";
-                downloadBtn.classList.add('opacity-75', 'cursor-not-allowed');
-                downloadBtn.disabled = true;
+            // Quick Preset Buttons
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    inputs.victim.value = btn.dataset.victim;
+                    inputs.theme.value = btn.dataset.vibe;
+                    inputs.reason.value = btn.dataset.reason;
+                    customReasonContainer.classList.add('hidden');
+                    inputs.destination.value = btn.dataset.dest;
+                    inputs.signer.value = btn.dataset.signer;
+                    inputs.stamp.removeAttribute('data-user-edited');
+                    
+                    updateTheme();
+                    updateText();
+                    showToast(`Loaded "${btn.textContent.trim()}" preset!`);
+                });
+            });
 
-                // CRITICAL STEP: Temporarily remove scale transform so html2canvas renders full 900x650
-                const currentTransform = certificateContainer.style.transform;
-                certificateContainer.style.transform = 'scale(1)';
+            // Reset Button
+            resetBtn.addEventListener('click', () => {
+                inputs.title.value = "Praman Patra (Barbaadi)";
+                inputs.theme.value = "classic";
+                inputs.victim.value = "Daksh Saini";
+                inputs.reason.value = "Bina kisi reason ke hawa mein udne ke liye.";
+                customReasonContainer.classList.add('hidden');
+                inputs.customReason.value = "";
+                inputs.destination.value = "Narak ka Ticket";
+                inputs.signer.value = "Your Best Friend";
+                inputs.date.value = todayFormatted;
+                inputs.stamp.removeAttribute('data-user-edited');
                 
+                updateTheme();
+                updateText();
+                showToast("Form reset to defaults");
+            });
+
+            // =========================================================================
+            // CORE RENDERING ENGINE: OFF-SCREEN ULTRA-HD PIPELINE (3X Scale)
+            // Solves clipping, viewport cutting, font fallbacks, and stretching 100%!
+            // =========================================================================
+            async function generateHighResCertificateCanvas() {
+                // Ensure all web fonts (Oswald, Dancing Script, Great Vibes, Poppins) are ready
+                if (document.fonts) {
+                    await document.fonts.ready;
+                }
+
+                // 1. Create dedicated off-screen staging wrapper detached from viewport
+                const stage = document.createElement('div');
+                stage.style.position = 'fixed';
+                stage.style.top = '-10000px';
+                stage.style.left = '-10000px';
+                stage.style.width = '900px';
+                stage.style.height = '650px';
+                stage.style.overflow = 'visible';
+                stage.style.zIndex = '-9999';
+                stage.style.opacity = '1';
+                stage.style.pointerEvents = 'none';
+
+                // 2. Deep clone the certificate container
+                const clone = certificateContainer.cloneNode(true);
+                clone.id = 'certificate-render-clone';
+                clone.style.transform = 'none';
+                clone.style.webkitTransform = 'none';
+                clone.style.margin = '0';
+                clone.style.width = '900px';
+                clone.style.height = '650px';
+                clone.style.minWidth = '900px';
+                clone.style.minHeight = '650px';
+                clone.style.maxWidth = '900px';
+                clone.style.maxHeight = '650px';
+                clone.style.position = 'relative';
+                clone.style.boxShadow = 'none';
+
+                // 3. Explicitly copy computed CSS custom properties so colors match perfectly
+                const currentStyles = window.getComputedStyle(certificateContainer);
+                const cssVars = [
+                    '--cert-bg',
+                    '--cert-border-outer',
+                    '--cert-border-inner',
+                    '--cert-text-dark',
+                    '--cert-text-highlight',
+                    '--cert-stamp-color'
+                ];
+                cssVars.forEach(v => {
+                    const val = certificateContainer.style.getPropertyValue(v) || currentStyles.getPropertyValue(v);
+                    if (val) clone.style.setProperty(v, val);
+                });
+
+                stage.appendChild(clone);
+                document.body.appendChild(stage);
+
                 try {
-                    // Wait a tiny bit for DOM to update transform
-                    await new Promise(r => setTimeout(r, 100));
+                    // Small tick for DOM to complete layout and font calculations
+                    await new Promise(resolve => setTimeout(resolve, 120));
 
-                    const canvas = await html2canvas(certificateContainer, {
-                        scale: 3, // High quality 
-                        backgroundColor: themes[inputs.theme.value].bg,
-                        logging: false,
-                        useCORS: true
+                    // 4. Capture at 3X resolution = 2700 x 1950 pixels (Crisp 300 DPI equivalent)
+                    const canvas = await html2canvas(clone, {
+                        scale: 3,
+                        width: 900,
+                        height: 650,
+                        windowWidth: 1200,
+                        windowHeight: 900,
+                        scrollX: 0,
+                        scrollY: 0,
+                        backgroundColor: clone.style.getPropertyValue('--cert-bg') || '#fff8eb',
+                        useCORS: true,
+                        allowTaint: true,
+                        logging: false
                     });
 
-                    // Restore scale immediately after capture
-                    certificateContainer.style.transform = currentTransform;
+                    return canvas;
+                } finally {
+                    // 5. Clean up staging container from DOM
+                    document.body.removeChild(stage);
+                }
+            }
 
-                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                    const { jsPDF } = window.jspdf;
-                    
-                    // A4 Landscape is 297mm x 210mm
-                    const pdf = new jsPDF({
-                        orientation: 'landscape',
-                        unit: 'mm',
-                        format: 'a4'
+            // Confetti Trigger
+            function fireConfetti() {
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 160,
+                        spread: 90,
+                        origin: { y: 0.62 },
+                        zIndex: 99999,
+                        colors: ['#ef4444', '#f97316', '#eab308', '#10b981', '#3b82f6', '#a855f7']
                     });
+                }
+            }
 
-                    // Calculate dimensions to fit exactly on A4 leaving slight margin
-                    const pdfWidth = 297; 
-                    const pdfHeight = 210;
-                    
-                    const canvasRatio = canvas.height / canvas.width;
-                    const pdfRatio = pdfHeight / pdfWidth;
-                    
-                    let finalWidth, finalHeight, finalX, finalY;
-                    
-                    if (canvasRatio > pdfRatio) {
-                        finalHeight = pdfHeight - 10; // 5mm margin
-                        finalWidth = finalHeight / canvasRatio;
-                        finalX = (pdfWidth - finalWidth) / 2;
-                        finalY = 5;
-                    } else {
-                        finalWidth = pdfWidth - 20; // 10mm margin
-                        finalHeight = finalWidth * canvasRatio;
-                        finalX = 10;
-                        finalY = (pdfHeight - finalHeight) / 2;
-                    }
+            // Helper to get safe file name
+            function getCleanFileName() {
+                let name = inputs.victim.value.trim().replace(/[^a-zA-Z0-9_\u0900-\u097F]/g, '_');
+                return name || "Mahaan_Aatma";
+            }
 
-                    pdf.addImage(imgData, 'JPEG', finalX, finalY, finalWidth, finalHeight);
-                    
-                    let fileName = inputs.victim.value.trim().replace(/\s+/g, '_');
-                    if(!fileName) fileName = "Dost";
-                    
-                    pdf.save(`Barbaadi_Certificate_${fileName}.pdf`);
+            // =========================================================================
+            // 1. DOWNLOAD HD PNG LOGIC
+            // =========================================================================
+            downloadPngBtn.addEventListener('click', async () => {
+                const originalHtml = downloadPngBtn.innerHTML;
+                downloadPngBtn.innerHTML = `
+                    <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                    <span>Generating HD PNG... ⏳</span>
+                `;
+                downloadPngBtn.disabled = true;
 
-                    // Trigger Confetti! 🎉
-                    if (typeof confetti === 'function') {
-                        confetti({
-                            particleCount: 150,
-                            spread: 100,
-                            origin: { y: 0.6 },
-                            zIndex: 9999,
-                            colors: ['#ef4444', '#f97316', '#eab308', '#3b82f6', '#a855f7']
-                        });
-                    }
+                try {
+                    const canvas = await generateHighResCertificateCanvas();
+                    
+                    // Convert canvas to PNG blob
+                    canvas.toBlob((blob) => {
+                        if (!blob) throw new Error("Canvas blob conversion failed");
+                        
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `Barbaadi_Certificate_${getCleanFileName()}.png`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+
+                        fireConfetti();
+                        showToast("HD PNG Downloaded! Send it to WhatsApp 🚀", "🖼️");
+                    }, 'image/png');
 
                 } catch (err) {
-                    console.error("PDF Generation Error:", err);
-                    alert("Something went wrong! Please try again.");
-                    // Ensure transform is restored on error
-                    certificateContainer.style.transform = currentTransform; 
+                    console.error("PNG Generation Error:", err);
+                    alert("Failed to generate PNG. Please try again!");
                 } finally {
-                    // Reset Button
-                    downloadBtn.innerHTML = originalText;
-                    downloadBtn.classList.remove('opacity-75', 'cursor-not-allowed');
-                    downloadBtn.disabled = false;
+                    downloadPngBtn.innerHTML = originalHtml;
+                    downloadPngBtn.disabled = false;
                 }
             });
 
-            // Init
-            updateTheme();
-            updateText();
-            // Need a tiny timeout to ensure container is fully rendered before calculating width
-            setTimeout(resizePreview, 50); 
+            // =========================================================================
+            // 2. DOWNLOAD PRINT-READY A4 LANDSCAPE PDF LOGIC
+            // =========================================================================
+            downloadPdfBtn.addEventListener('click', async () => {
+                const originalHtml = downloadPdfBtn.innerHTML;
+                downloadPdfBtn.innerHTML = `
+                    <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                    <span>Preparing PDF...</span>
+                `;
+                downloadPdfBtn.disabled = true;
 
-            // Web Share API Logic
-            if (shareBtn) {
-                shareBtn.addEventListener('click', async () => {
+                try {
+                    const canvas = await generateHighResCertificateCanvas();
+                    const imgData = canvas.toDataURL('image/png'); // Lossless PNG for crisp text
+
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF({
+                        orientation: 'landscape',
+                        unit: 'mm',
+                        format: 'a4' // 297mm x 210mm
+                    });
+
+                    const pdfWidth = 297;
+                    const pdfHeight = 210;
+
+                    // Certificate ratio is 900 / 650 = 1.384615
+                    const certRatio = 900 / 650;
+                    
+                    // Fit inside A4 with proportional margins (minimum 10mm margin)
+                    const maxUsableWidth = pdfWidth - 20; // 277mm
+                    const maxUsableHeight = pdfHeight - 20; // 190mm
+
+                    let finalWidth = maxUsableWidth;
+                    let finalHeight = finalWidth / certRatio;
+
+                    if (finalHeight > maxUsableHeight) {
+                        finalHeight = maxUsableHeight;
+                        finalWidth = finalHeight * certRatio;
+                    }
+
+                    // Center on page
+                    const finalX = (pdfWidth - finalWidth) / 2;
+                    const finalY = (pdfHeight - finalHeight) / 2;
+
+                    pdf.addImage(imgData, 'PNG', finalX, finalY, finalWidth, finalHeight, undefined, 'FAST');
+                    pdf.save(`Barbaadi_Certificate_${getCleanFileName()}.pdf`);
+
+                    fireConfetti();
+                    showToast("Print-Ready A4 PDF Saved! 📄", "🎉");
+
+                } catch (err) {
+                    console.error("PDF Generation Error:", err);
+                    alert("Failed to generate PDF. Please try again!");
+                } finally {
+                    downloadPdfBtn.innerHTML = originalHtml;
+                    downloadPdfBtn.disabled = false;
+                }
+            });
+
+            // =========================================================================
+            // 3. COPY IMAGE TO CLIPBOARD LOGIC
+            // =========================================================================
+            copyImgBtn.addEventListener('click', async () => {
+                const originalHtml = copyImgBtn.innerHTML;
+                copyImgBtn.innerHTML = `<span>Copying... ⏳</span>`;
+                copyImgBtn.disabled = true;
+
+                try {
+                    const canvas = await generateHighResCertificateCanvas();
+                    
+                    if (navigator.clipboard && window.ClipboardItem) {
+                        canvas.toBlob(async (blob) => {
+                            try {
+                                await navigator.clipboard.write([
+                                    new ClipboardItem({ 'image/png': blob })
+                                ]);
+                                showToast("Certificate image copied! Ready to paste into WhatsApp Web 📋", "📋");
+                            } catch (clipErr) {
+                                console.warn("ClipboardItem write failed:", clipErr);
+                                showToast("Direct paste unavailable on this browser. Use Download PNG!", "⚠️");
+                            }
+                        }, 'image/png');
+                    } else {
+                        showToast("Clipboard image not supported by this browser. Use Download PNG!", "⚠️");
+                    }
+                } catch (err) {
+                    console.error("Copy Error:", err);
+                    showToast("Failed to copy image. Please download instead.", "⚠️");
+                } finally {
+                    copyImgBtn.innerHTML = originalHtml;
+                    copyImgBtn.disabled = false;
+                }
+            });
+
+            // =========================================================================
+            // 4. WHATSAPP ROAST SHARE
+            // =========================================================================
+            whatsappShareBtn.addEventListener('click', () => {
+                const victim = inputs.victim.value.trim() || "Dost";
+                const reason = (inputs.reason.value === 'custom' ? inputs.customReason.value : inputs.reason.value) || "apne kaale kartoot";
+                const dest = inputs.destination.value;
+                const pageUrl = window.location.href;
+                
+                const message = `🚨 *OFFICIAL NOTICE FROM MINISTRY OF BARBAADI* 🚨\n\nShree/Shreemati *${victim}* ko officially *'${reason}'* ke jurm mein *${dest}* de diya gaya hai! 😂🔥\n\nCheck your official certificate or roast others here:\n👉 ${pageUrl}`;
+                
+                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, '_blank');
+            });
+
+            // =========================================================================
+            // 5. WEB SHARE API FOR WEBSITE
+            // =========================================================================
+            if (shareWebsiteBtn) {
+                shareWebsiteBtn.addEventListener('click', async () => {
                     if (navigator.share) {
                         try {
                             await navigator.share({
                                 title: 'Barbaadi.com - Certificate Generator 🔥',
-                                text: 'Generate hilarious fake certificates to roast your friends! Send them to Narak officially.',
+                                text: 'Officially ruin your friends\' reputations! Generate hilarious certificates for their everyday crimes.',
                                 url: window.location.href,
                             });
                         } catch (err) {
-                            console.log('Error sharing:', err);
+                            if (err.name !== 'AbortError') console.log('Share error:', err);
                         }
                     } else {
-                        // Fallback: Copy link to clipboard
                         navigator.clipboard.writeText(window.location.href);
-                        const originalText = shareBtn.innerHTML;
-                        shareBtn.innerHTML = "Link Copied! ✅";
-                        setTimeout(() => { shareBtn.innerHTML = originalText; }, 2000);
+                        showToast("Website link copied to clipboard! 🔗", "✅");
                     }
                 });
             }
+
+            // Initialize on start
+            updateTheme();
+            updateText();
+            setTimeout(resizePreview, 80);
         });
     </script>
 </body>
