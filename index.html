@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbaadi Certificate Generator</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Oswald:wght@500;700&family=Poppins:wght@400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    
+    <!-- PDF & Canvas Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        html { scroll-behavior: smooth; }
+        
+        /* Base UI Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            /* Animated background gradient */
+            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #312e81, #0f172a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-field {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            outline: none;
+        }
+
+        /* 
+           CERTIFICATE STYLES 
+           Fixed Landscape dimensions (900x650) to ensure perfect rendering.
+        */
+        :root {
+            /* Default Classic Theme */
+            --cert-bg: #fff5e6;
+            --cert-border-outer: #b91c1c;
+            --cert-border-inner: #ea580c;
+            --cert-text-dark: #1a1a1a;
+            --cert-text-highlight: #991b1b;
+            --cert-stamp-color: rgba(185, 28, 28, 0.15);
+        }
+
+        .preview-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow: visible;
+            /* Container for the scaled certificate */
+            position: relative;
+        }
+
+        #certificate-container {
+            width: 900px;
+            height: 650px;
+            background-color: var(--cert-bg);
+            position: relative;
+            box-sizing: border-box;
+            padding: 20px;
+            transform-origin: top center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            /* Texture overlay */
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        /* Stable CSS borders instead of SVG for reliable PDF export */
+        .cert-border {
+            border: 5px solid var(--cert-border-outer);
+            width: 100%;
+            height: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .cert-inner-border {
+            border: 2px dashed var(--cert-border-inner);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Crucial for keeping footer at bottom */
+            padding: 25px 30px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cert-header {
+            text-align: center;
+        }
+
+        .cert-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.8rem;
+            color: var(--cert-border-outer);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            line-height: 1.1;
+            margin-bottom: 5px;
+        }
+
+        .cert-subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--cert-border-inner);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .cert-body {
+            text-align: center;
+            font-size: 1.15rem;
+            line-height: 1.4;
+            color: var(--cert-text-dark);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .name-highlight {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: var(--cert-text-highlight);
+            border-bottom: 2px solid var(--cert-border-outer);
+            display: inline-block;
+            padding: 0 20px;
+            margin: 10px 0;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .roast-text {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: var(--cert-text-highlight);
+            font-size: 1.15rem;
+            margin: 10px 0;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.04);
+            border-radius: 8px;
+            max-width: 90%;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .cert-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 10px;
+            position: relative;
+            z-index: 10;
+            margin-top: 10px;
+        }
+
+        .signature-block {
+            text-align: center;
+            width: 220px;
+        }
+
+        .signature-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.2rem;
+            color: #1e3a8a; 
+            border-bottom: 1px solid var(--cert-text-dark);
+            height: 45px; 
+            line-height: 55px; 
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #display-date {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            color: var(--cert-text-dark);
+        }
+
+        .signature-label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            color: var(--cert-text-dark);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .stamp {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            color: var(--cert-stamp-color);
+            font-family: 'Oswald', sans-serif;
+            font-size: 8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            z-index: 1;
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        /* Custom Scrollbar for sleekness */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2); 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="w-full py-4 backdrop-blur-lg bg-black/40 border-b border-white/10 sticky top-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl animate-bounce">🔥</span>
+                <h1 class="text-xl md:text-2xl font-bold font-['Oswald'] tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-orange-500 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    BARBAADI.COM
+                </h1>
+            </div>
+            <div class="hidden md:flex gap-6 items-center">
+                <a href="#generator" class="text-sm font-medium text-gray-300 hover:text-white transition">Generator</a>
+                <a href="#how-it-works" class="text-sm font-medium text-gray-300 hover:text-white transition">How it Works</a>
+                <a href="#wall-of-shame" class="text-sm font-medium text-gray-300 hover:text-white transition">Wall of Shame</a>
+            </div>
+            <a href="https://github.com" target="_blank" class="text-sm font-medium bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full text-white flex items-center gap-2 transition-all border border-white/10">
+                <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"></path></svg>
+                <span class="hidden sm:inline">Star Repo</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="w-full pt-16 pb-12 md:pt-24 md:pb-20 px-4 text-center relative overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-600/20 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+        
+        <div class="inline-block bg-white/10 text-blue-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-6 border border-white/10">
+            🔥 #1 Certificate Generator in India
+        </div>
+        
+        <h1 class="text-5xl md:text-7xl font-bold font-['Oswald'] text-white mb-6 uppercase tracking-tight">
+            Ministry of <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-yellow-500 drop-shadow-lg">Barbaadi</span>
+        </h1>
+        <p class="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-10 font-['Poppins'] leading-relaxed">
+            Officially ruin your friends' reputations. Generate high-quality, totally fake, and 100% hilarious certificates for their everyday crimes.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="#generator" class="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold py-4 px-8 rounded-full shadow-[0_0_30px_rgba(239,68,68,0.4)] transform transition hover:-translate-y-1 hover:scale-105 text-lg">
+                Start Roasting Now 👇
+            </a>
+            <button id="share-website-btn" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold py-4 px-8 rounded-full transition-all text-lg flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                Share with Gang
+            </button>
+        </div>
+    </section>
+
+    <!-- Generator Section -->
+    <section id="generator" class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-8 grid grid-cols-1 xl:grid-cols-12 gap-8 items-start scroll-mt-24">
+        
+        <!-- FORM SECTION (Left Side) -->
+        <div class="xl:col-span-4 glass-panel p-6 rounded-2xl shadow-2xl relative overflow-hidden">
+            <!-- Decorative blur blob -->
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+            
+            <h2 class="text-2xl font-bold mb-6 text-white flex items-center gap-2">
+                <span class="text-blue-400">📝</span> Fill Details
+            </h2>
+            
+            <div class="space-y-5 relative z-10">
+                <!-- Theme Selector -->
+                <div>
+                    <label class="block text-sm font-medium mb-1.5 text-gray-300">Select Vibe (Theme)</label>
+                    <select id="theme-select" class="w-full p-3.5 rounded-xl input-field font-['Poppins']">
+                        <option value="classic">🧨 Classic Barbaadi (Red/Orange)</option>
+                        <option value="toxic">🐍 Toxic Popat (Neon Green)</option>
+                        <option value="royal">👑 Royal Dhokha (Purple/Gold)</option>
+                        <option value="blue">🥶 Berozgar Blue (Cyan/Blue)</option>
+                        <option value="pink">🎀 Panauti Pink (Hot Pink)</option>
+                        <option value="yellow">⚠️ Chhapri Alert (Yellow/Black)</option>
+                    </select>
+                </div>
+
+                <!-- Victim Name -->
+                <div>
+                    <label class="block text-sm font-medium mb-1.5 text-gray-300">Name of "Mahaan Aatma" (Victim)</label>
+                    <input type="text" id="victim-name" placeholder="e.g. Ramesh Bhai" class="w-full p-3.5 rounded-xl input-field font-['Poppins']" value="Daksh Saini" maxlength="30">
+                </div>
+
+                <!-- Reason Selector -->
+                <div>
+                    <label class="block text-sm font-medium mb-1.5 text-gray-300">Select Paap / Taunt</label>
+                    <select id="reason-select" class="w-full p-3.5 rounded-xl input-field font-['Poppins']">
+                        <optgroup label="Lovely Taunts (Praise in disguise) 💖">
+                            <option value="Chup-chap padhai karke top marne aur kisiko na batane ka ghor apradh.">Chup-chap padhai karke top marne (Secret Topper).</option>
+                            <option value="Nayi gaadi/phone le li par dosto ko party na dene ki kanjoosi par.">Nayi gaadi/phone le li par party nahi di.</option>
+                            <option value="Gym jaakar achanak se sundar banne aur baakiyon ko complex dene par.">Gym jaakar achanak se sundar banne par.</option>
+                            <option value="Single dosto ke group mein akele relationship mein aane ki gaddari.">Single dosto ko chhodkar relationship mein aana.</option>
+                            <option value="Apni over-smartness aur sundarta se sabko ghayal karne ke jurm mein.">Apni sundarta se sabko ghayal karne ke jurm mein.</option>
+                            <option value="Chup chap successful hoke hum gareeb dosto ko bhool jane par.">Successful hoke dosto ko bhool jane par.</option>
+                        </optgroup>
+                        
+                        <optgroup label="Savage Roasts 🔥">
+                            <option value="Bina kisi reason ke hawa mein udne ke liye.">Bina kisi reason ke hawa mein udne ke liye.</option>
+                            <option value="Har plan banakar end moment pe cancel karne par.">Har plan banakar end moment pe cancel karne par.</option>
+                            <option value="Reels share karke khud reply na karne ki aadat par.">Reels share karke khud reply na karne ki aadat par.</option>
+                            <option value="Free ki daaru dekh kar pighal jane ki kamzori par.">Free ki daaru dekh kar pighal jane ki kamzori par.</option>
+                            <option value="Diet ka natak karke akele poora pizza khane par.">Diet ka natak karke akele poora pizza khane par.</option>
+                            <option value="Group chat mein messages seen karke ignore karne par.">Group chat mein messages seen karke ignore karne par.</option>
+                            <option value="Single rehne ki extreme limit cross karne ke liye.">Single rehne ki extreme limit cross karne ke liye.</option>
+                            <option value="Hamesha 'bas 5 min' bolkar ghar pe sone ke liye.">Hamesha 'bas 5 min' bolkar ghar pe sone ke liye.</option>
+                            <option value="Gym ka subscription leke 1 din bhi na jane ke liye.">Gym ka subscription leke 1 din bhi na jane ke liye.</option>
+                            <option value="Ex ko wapas text karke apni bezzati karwane par.">Ex ko wapas text karke apni bezzati karwane par.</option>
+                            <option value="Udhaar ke paise wapas maangne pe gajini ban jane par.">Udhaar ke paise wapas maangne pe gajini ban jane par.</option>
+                            <option value="Story pe 'Depressed' likh ke dosto ke sath party karne par.">Story pe 'Depressed' likh ke dosto ke sath party karne par.</option>
+                            <option value="Bina nahaaye mehenga deo lagake ghumne ke jurm mein.">Bina nahaaye mehenga deo lagake ghumne ke jurm mein.</option>
+                            <option value="Subah jaldi uthne ka fake alarm lagake sabko jagane par.">Subah jaldi uthne ka fake alarm lagake sabko jagane par.</option>
+                            <option value="Bina contribution diye sabse zyada party me khane ke liye.">Bina contribution diye sabse zyada party me khane ke liye.</option>
+                            <option value="Insta pe 'I need space' likhkar fake sympathy lene par.">Insta pe 'I need space' likhkar fake sympathy lene par.</option>
+                            <option value="Ghar walon ke samne shareef banne ka award-winning natak karne par.">Ghar walon ke samne shareef banne ka award-winning natak karne par.</option>
+                            <option value="PUBG/BGMI me noob hoke bhi IGL banne ki koshish karne par.">PUBG/BGMI me noob hoke bhi IGL banne ki koshish karne par.</option>
+                            <option value="Snapchat streaks ke liye zinda rehne ke jurm me.">Snapchat streaks ke liye zinda rehne ke jurm me.</option>
+                        </optgroup>
+                        
+                        <option value="custom" class="text-blue-400 font-bold">✍️ Custom - Apne shabdon mein bezzati karein</option>
+                    </select>
+                    
+                    <!-- Hidden Custom Input -->
+                    <div id="custom-reason-container" class="hidden mt-3">
+                        <input type="text" id="custom-reason-input" placeholder="Type your custom roast/taunt here (max 75 chars)" class="w-full p-3.5 rounded-xl input-field font-['Poppins'] text-sm" maxlength="75">
+                    </div>
+                </div>
+
+                <!-- Destination Selector -->
+                <div>
+                    <label class="block text-sm font-medium mb-1.5 text-gray-300">Final Destination</label>
+                    <select id="destination-select" class="w-full p-3.5 rounded-xl input-field font-['Poppins']">
+                        <option value="Narak ka Ticket">🔥 Narak ka Ticket</option>
+                        <option value="Swarg ka VIP Pass">✨ Swarg ka VIP Pass</option>
+                        <option value="Mental Hospital ka Bed">🏥 Mental Hospital ka Bed</option>
+                        <option value="Himalaya ka One-way Ticket">🏔️ Himalaya ka One-way Ticket</option>
+                        <option value="Tihar Jail ki VIP Cell">🚓 Tihar Jail ki VIP Cell</option>
+                    </select>
+                </div>
+
+                <!-- Signer Name -->
+                <div>
+                    <label class="block text-sm font-medium mb-1.5 text-gray-300">Authorized By (Your Name)</label>
+                    <input type="text" id="signer-name" placeholder="e.g. Tera Baap" class="w-full p-3.5 rounded-xl input-field font-['Poppins']" value="Your Best Friend" maxlength="25">
+                </div>
+                
+                <!-- Download Button -->
+                <button id="download-btn" class="w-full mt-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-4 px-4 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.4)] transform transition hover:-translate-y-1 flex items-center justify-center gap-2 text-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download High-Res PDF
+                </button>
+                <p class="text-xs text-gray-400 text-center mt-2">100% Free • No watermark • A4 Landscape Ready</p>
+            </div>
+        </div>
+
+        <!-- PREVIEW SECTION (Right Side) -->
+        <div class="xl:col-span-8 flex flex-col items-center w-full">
+            
+            <div class="w-full flex justify-between items-end mb-4 px-2">
+                <h2 class="text-2xl font-bold text-white">Live Preview</h2>
+                <span class="text-sm text-blue-300 bg-blue-900/40 px-3 py-1 rounded-full border border-blue-500/30">Auto-scales to fit screen</span>
+            </div>
+            
+            <!-- Wrapper to handle CSS scaling based on screen size -->
+            <div class="preview-wrapper bg-black/40 p-4 sm:p-8 rounded-2xl border border-white/10 w-full overflow-hidden flex justify-center shadow-2xl" id="preview-wrapper">
+                
+                <!-- THE ACTUAL CERTIFICATE (Fixed 900x650) -->
+                <div id="certificate-container">
+                    <div class="cert-border">
+                        <div class="cert-inner-border">
+                            
+                            <!-- Giant Watermark Stamp -->
+                            <div class="stamp" id="stamp-text">MAHA POPAT</div>
+
+                            <!-- Header -->
+                            <div class="cert-header">
+                                <div class="cert-title">Praman Patra (Barbaadi)</div>
+                                <div class="cert-subtitle">Recognizing ultimate failure and legendary popat-giri</div>
+                            </div>
+                            
+                            <!-- Body -->
+                            <div class="cert-body">
+                                <p>Yeh praman patra poore hosh-o-hawas mein<br>
+                                Shree / Shreemati</p>
+                                
+                                <div><span class="name-highlight" id="display-victim">Daksh Saini</span></div>
+                                
+                                <p>ko pradan kiya jata hai.</p>
+                                
+                                <div class="roast-text" style="font-family: 'Poppins', sans-serif; font-weight: 600; color: var(--cert-text-highlight); font-size: 1.1rem; margin: 5px 0; padding: 8px 15px; background: rgba(0,0,0,0.04); border-radius: 8px; max-width: 90%; border: 1px solid rgba(0,0,0,0.05);">
+                                    Inki Uplabdhi: "<span id="display-reason">Bina kisi reason ke hawa mein udne ke liye.</span>"
+                                </div>
+                                
+                                <p class="text-sm mt-2 max-w-2xl">
+                                    Society ghoshit karti hai ki aapka <strong id="display-destination">'Narak ka Ticket'</strong> confirm ho chuka hai.<br>
+                                    Aapki paap ki limit cross ho chuki hai, kripya sudhar jayein (jo ki absolutely namumkin hai).
+                                </p>
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="cert-footer">
+                                <div class="signature-block">
+                                    <div class="signature-text" id="display-date"></div>
+                                    <div class="signature-label">Date of Ruin</div>
+                                </div>
+                                
+                                <!-- Decorative Seal / Spacer -->
+                                <div class="flex flex-col items-center justify-end pb-2 opacity-80">
+                                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--cert-border-outer)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                        <path d="M12 8v4"/>
+                                        <path d="M12 16h.01"/>
+                                    </svg>
+                                </div>
+
+                                <div class="signature-block">
+                                    <!-- Full Cursive for Signature -->
+                                    <div class="signature-text" id="display-signer">Your Best Friend</div>
+                                    <div class="signature-label">Authorized By (Dost)</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="w-full py-20 bg-black/30 border-t border-white/5 scroll-mt-20">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold font-['Oswald'] text-white mb-12 uppercase tracking-wide">How to Ruin a Life (In 3 Steps)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-panel p-8 rounded-2xl relative transform transition hover:-translate-y-2">
+                    <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center text-xl font-bold text-white shadow-lg border-2 border-black/50">1</div>
+                    <h3 class="text-xl font-bold text-white mb-4 mt-4">Pick the Target 🎯</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Enter the name of that one friend who always cancels plans at the last minute or eats your food.</p>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl relative transform transition hover:-translate-y-2">
+                    <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center text-xl font-bold text-white shadow-lg border-2 border-black/50">2</div>
+                    <h3 class="text-xl font-bold text-white mb-4 mt-4">Select the Crime 📝</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Choose from our massive list of legendary Indian roasts, lovely taunts, or write your own custom insult.</p>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl relative transform transition hover:-translate-y-2">
+                    <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-full flex items-center justify-center text-xl font-bold text-white shadow-lg border-2 border-black/50">3</div>
+                    <h3 class="text-xl font-bold text-white mb-4 mt-4">Export & Expose 📤</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Download the high-res PDF and drop it in the WhatsApp group. Grab popcorn and watch the chaos unfold.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wall of Shame (Testimonials) -->
+    <section id="wall-of-shame" class="w-full py-20 scroll-mt-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold font-['Oswald'] text-center text-white mb-12 uppercase tracking-wide">Wall of Shame 🏆</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white/5 border border-white/10 p-6 rounded-xl hover:bg-white/10 transition-colors">
+                    <div class="flex text-yellow-400 mb-3 text-sm">★★★★★</div>
+                    <p class="text-gray-300 text-sm italic mb-4">"My best friend gave me this because I said 'bas 5 min' and arrived 2 hours late. I have framed it in my room."</p>
+                    <p class="text-white font-bold text-sm">- Late Lateef Rahul</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white/5 border border-white/10 p-6 rounded-xl hover:bg-white/10 transition-colors">
+                    <div class="flex text-yellow-400 mb-3 text-sm">★★★★★</div>
+                    <p class="text-gray-300 text-sm italic mb-4">"Used this to officially declare my brother a 'Chhapri' for his new yellow hair colour. Family WhatsApp group went crazy."</p>
+                    <p class="text-white font-bold text-sm">- Sneha D.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white/5 border border-white/10 p-6 rounded-xl hover:bg-white/10 transition-colors">
+                    <div class="flex text-yellow-400 mb-3 text-sm">★★★★★</div>
+                    <p class="text-gray-300 text-sm italic mb-4">"Perfect tool to roast my roommate who joined the gym but only goes there to click mirror selfies in the changing room."</p>
+                    <p class="text-white font-bold text-sm">- Gym Bro Amit</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-white/5 border border-white/10 p-6 rounded-xl hover:bg-white/10 transition-colors">
+                    <div class="flex text-yellow-400 mb-3 text-sm">★★★★★</div>
+                    <p class="text-gray-300 text-sm italic mb-4">"Got the 'Toxic Popat' award for ignoring texts while being active on Insta. 10/10 would ruin my reputation again."</p>
+                    <p class="text-white font-bold text-sm">- Ignored Priya</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="w-full py-12 border-t border-white/10 bg-black/50 text-center relative overflow-hidden mt-auto">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col items-center">
+            <div class="text-4xl mb-4 hover:scale-110 transition-transform cursor-pointer">💀</div>
+            <h3 class="font-['Oswald'] text-2xl text-white tracking-widest mb-3 uppercase">Barbaadi.com</h3>
+            <p class="text-gray-400 text-sm mb-8 max-w-md leading-relaxed">
+                Created for absolute fun. If you take this seriously, you probably need a real certificate. Ruin responsibly!
+            </p>
+            <div class="flex flex-wrap justify-center gap-6 text-sm text-gray-500 font-medium">
+                <a href="#" class="hover:text-white transition">Privacy Policy (Lol JK)</a>
+                <span class="hidden sm:inline">•</span>
+                <a href="https://github.com" target="_blank" class="hover:text-white transition">GitHub Repository</a>
+                <span class="hidden sm:inline">•</span>
+                <span>Made with ☕ & 🤬 in India</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // DOM Elements
+            const inputs = {
+                victim: document.getElementById('victim-name'),
+                reason: document.getElementById('reason-select'),
+                customReason: document.getElementById('custom-reason-input'),
+                destination: document.getElementById('destination-select'),
+                signer: document.getElementById('signer-name'),
+                theme: document.getElementById('theme-select')
+            };
+            
+            const displays = {
+                victim: document.getElementById('display-victim'),
+                reason: document.getElementById('display-reason'),
+                destination: document.getElementById('display-destination'),
+                signer: document.getElementById('display-signer'),
+                date: document.getElementById('display-date'),
+                stamp: document.getElementById('stamp-text')
+            };
+            
+            const customReasonContainer = document.getElementById('custom-reason-container');
+            const downloadBtn = document.getElementById('download-btn');
+            const shareBtn = document.getElementById('share-website-btn');
+            const certificateContainer = document.getElementById('certificate-container');
+            const previewWrapper = document.getElementById('preview-wrapper');
+
+            // Themes Configuration
+            const themes = {
+                classic: { bg: '#fff5e6', outer: '#b91c1c', inner: '#ea580c', dark: '#1a1a1a', hl: '#991b1b', stamp: 'rgba(185, 28, 28, 0.12)', stampText: 'OFFICIALLY BARBAAD' },
+                toxic: { bg: '#f0fdf4', outer: '#16a34a', inner: '#84cc16', dark: '#14532d', hl: '#15803d', stamp: 'rgba(22, 163, 74, 0.12)', stampText: 'TOXIC POPAT' },
+                royal: { bg: '#faf5ff', outer: '#7e22ce', inner: '#eab308', dark: '#3b0764', hl: '#6b21a8', stamp: 'rgba(126, 34, 206, 0.1)', stampText: 'ROYAL DHOKHA' },
+                blue: { bg: '#ecfeff', outer: '#0891b2', inner: '#06b6d4', dark: '#164e63', hl: '#0e7490', stamp: 'rgba(8, 145, 178, 0.12)', stampText: 'BEROZGAR' },
+                pink: { bg: '#fdf2f8', outer: '#db2777', inner: '#f43f5e', dark: '#831843', hl: '#be185d', stamp: 'rgba(219, 39, 119, 0.12)', stampText: 'PANAUTI' },
+                yellow: { bg: '#fefce8', outer: '#ca8a04', inner: '#111827', dark: '#111827', hl: '#854d0e', stamp: 'rgba(202, 138, 4, 0.15)', stampText: 'CHHAPRI ALERT' }
+            };
+
+            // Set current date (Indian Format)
+            displays.date.textContent = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+
+            // Scale the certificate to fit the screen visually
+            function resizePreview() {
+                // The fixed size of the certificate
+                const targetWidth = 900; 
+                const targetHeight = 650;
+                
+                // Available width in the wrapper
+                const wrapperWidth = previewWrapper.clientWidth - 32; // minus padding
+                
+                // Calculate scale (max 1)
+                const scale = Math.min(wrapperWidth / targetWidth, 1);
+                
+                // Apply CSS Transform
+                certificateContainer.style.transform = `scale(${scale})`;
+                
+                // Adjust wrapper height so it doesn't leave huge empty gaps when scaled down
+                previewWrapper.style.height = `${(targetHeight * scale) + 64}px`; // 64 is padding
+            }
+
+            window.addEventListener('resize', resizePreview);
+
+            // Update Theme Colors
+            function updateTheme() {
+                const t = themes[inputs.theme.value];
+                const root = certificateContainer;
+                
+                root.style.setProperty('--cert-bg', t.bg);
+                root.style.setProperty('--cert-border-outer', t.outer);
+                root.style.setProperty('--cert-border-inner', t.inner);
+                root.style.setProperty('--cert-text-dark', t.dark);
+                root.style.setProperty('--cert-text-highlight', t.hl);
+                root.style.setProperty('--cert-stamp-color', t.stamp);
+                
+                displays.stamp.textContent = t.stampText;
+            }
+
+            // Update Text 
+            function updateText() {
+                displays.victim.textContent = inputs.victim.value.trim() || "Mahaan Aatma";
+                
+                // Handle Custom Reason Logic
+                if (inputs.reason.value === 'custom') {
+                    displays.reason.textContent = inputs.customReason.value || "Khud ki bezzati type karein...";
+                } else {
+                    displays.reason.textContent = inputs.reason.value;
+                }
+                
+                displays.destination.textContent = `'${inputs.destination.value}'`;
+                displays.signer.textContent = inputs.signer.value.trim() || "Anonymous Dost";
+            }
+
+            // Event Listeners for Live Preview
+            inputs.victim.addEventListener('input', updateText);
+            
+            // Toggle custom input visibility
+            inputs.reason.addEventListener('change', (e) => {
+                if (e.target.value === 'custom') {
+                    customReasonContainer.classList.remove('hidden');
+                } else {
+                    customReasonContainer.classList.add('hidden');
+                }
+                updateText();
+            });
+            
+            inputs.customReason.addEventListener('input', updateText);
+            inputs.destination.addEventListener('change', updateText);
+            inputs.signer.addEventListener('input', updateText);
+            inputs.theme.addEventListener('change', updateTheme);
+
+            // PDF Generation Logic
+            downloadBtn.addEventListener('click', async () => {
+                const originalText = downloadBtn.innerHTML;
+                downloadBtn.innerHTML = "Generating... ⏳";
+                downloadBtn.classList.add('opacity-75', 'cursor-not-allowed');
+                downloadBtn.disabled = true;
+
+                // CRITICAL STEP: Temporarily remove scale transform so html2canvas renders full 900x650
+                const currentTransform = certificateContainer.style.transform;
+                certificateContainer.style.transform = 'scale(1)';
+                
+                try {
+                    // Wait a tiny bit for DOM to update transform
+                    await new Promise(r => setTimeout(r, 100));
+
+                    const canvas = await html2canvas(certificateContainer, {
+                        scale: 3, // High quality 
+                        backgroundColor: themes[inputs.theme.value].bg,
+                        logging: false,
+                        useCORS: true
+                    });
+
+                    // Restore scale immediately after capture
+                    certificateContainer.style.transform = currentTransform;
+
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    const { jsPDF } = window.jspdf;
+                    
+                    // A4 Landscape is 297mm x 210mm
+                    const pdf = new jsPDF({
+                        orientation: 'landscape',
+                        unit: 'mm',
+                        format: 'a4'
+                    });
+
+                    // Calculate dimensions to fit exactly on A4 leaving slight margin
+                    const pdfWidth = 297; 
+                    const pdfHeight = 210;
+                    
+                    const canvasRatio = canvas.height / canvas.width;
+                    const pdfRatio = pdfHeight / pdfWidth;
+                    
+                    let finalWidth, finalHeight, finalX, finalY;
+                    
+                    if (canvasRatio > pdfRatio) {
+                        finalHeight = pdfHeight - 10; // 5mm margin
+                        finalWidth = finalHeight / canvasRatio;
+                        finalX = (pdfWidth - finalWidth) / 2;
+                        finalY = 5;
+                    } else {
+                        finalWidth = pdfWidth - 20; // 10mm margin
+                        finalHeight = finalWidth * canvasRatio;
+                        finalX = 10;
+                        finalY = (pdfHeight - finalHeight) / 2;
+                    }
+
+                    pdf.addImage(imgData, 'JPEG', finalX, finalY, finalWidth, finalHeight);
+                    
+                    let fileName = inputs.victim.value.trim().replace(/\s+/g, '_');
+                    if(!fileName) fileName = "Dost";
+                    
+                    pdf.save(`Barbaadi_Certificate_${fileName}.pdf`);
+
+                    // Trigger Confetti! 🎉
+                    if (typeof confetti === 'function') {
+                        confetti({
+                            particleCount: 150,
+                            spread: 100,
+                            origin: { y: 0.6 },
+                            zIndex: 9999,
+                            colors: ['#ef4444', '#f97316', '#eab308', '#3b82f6', '#a855f7']
+                        });
+                    }
+
+                } catch (err) {
+                    console.error("PDF Generation Error:", err);
+                    alert("Something went wrong! Please try again.");
+                    // Ensure transform is restored on error
+                    certificateContainer.style.transform = currentTransform; 
+                } finally {
+                    // Reset Button
+                    downloadBtn.innerHTML = originalText;
+                    downloadBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+                    downloadBtn.disabled = false;
+                }
+            });
+
+            // Init
+            updateTheme();
+            updateText();
+            // Need a tiny timeout to ensure container is fully rendered before calculating width
+            setTimeout(resizePreview, 50); 
+
+            // Web Share API Logic
+            if (shareBtn) {
+                shareBtn.addEventListener('click', async () => {
+                    if (navigator.share) {
+                        try {
+                            await navigator.share({
+                                title: 'Barbaadi.com - Certificate Generator 🔥',
+                                text: 'Generate hilarious fake certificates to roast your friends! Send them to Narak officially.',
+                                url: window.location.href,
+                            });
+                        } catch (err) {
+                            console.log('Error sharing:', err);
+                        }
+                    } else {
+                        // Fallback: Copy link to clipboard
+                        navigator.clipboard.writeText(window.location.href);
+                        const originalText = shareBtn.innerHTML;
+                        shareBtn.innerHTML = "Link Copied! ✅";
+                        setTimeout(() => { shareBtn.innerHTML = originalText; }, 2000);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
